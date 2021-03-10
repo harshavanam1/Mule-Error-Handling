@@ -44,7 +44,7 @@ output application/json
 25/0]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="ffad6e36-f628-4df0-bd9f-28452faa4f27" message="Error -----  #[payload]" />
+		<logger level="INFO" doc:name="Logger" doc:id="ffad6e36-f628-4df0-bd9f-28452faa4f27" message="Error ----  #[payload]" />
 		<error-handler >
 			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="dec65c89-8eef-4f3d-94e2-1cc730e69306" type="ANY">
 				<ee:transform doc:name="Transform Message" doc:id="79b3503e-917d-41d2-9623-2dfe5bf585df" >
