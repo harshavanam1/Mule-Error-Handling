@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="error-handling7Flow" doc:id="71611bc6-51e3-440f-93db-09eee5f6b742" >
+		<http:listener doc:name="Listener" doc:id="872b0b72-6507-490a-8762-1a7c4ab7cdaf" config-ref="HTTP_Listener_config" path="/error5"/>
+		<flow-ref doc:name="Flow Reference" doc:id="628b0331-0510-4871-969f-09064e1bb964" name="error-handling8Flow1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ec74aa47-2ae1-4896-9e0e-af0661aa8683" message="parent Error------ #[payload]"/>
+		<error-handler >
+<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a64a7a33-1cae-4e8d-9fa5-23c5e81dd565" >
+				<ee:transform doc:name="Transform Message" doc:id="9643081d-f99e-4150-8697-03e66c8ab88e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Error-continue":"parent Flow"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+			</error-handler>
+	</flow>
+	<flow name="error-handling8Flow1" doc:id="af7dad61-787e-47ef-ad34-d4d2612aef1a" >
+		<ee:transform doc:name="Transform Message" doc:id="3d075387-2539-4b5c-922d-3a3e90554be5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+25/0]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="252eca4b-aa6f-49a4-acef-54509e7b9eb7" message="child Error------ #[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3f0c0496-15de-4a5f-af56-5cc1ec5eac7e" >
+				<ee:transform doc:name="Transform Message" doc:id="2911b44a-d181-46cc-9d65-f643c5a8659d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Error-Propagate":"child Flow"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="error-handling9Flow" doc:id="865635b8-33cb-41dd-9558-054123d80181" >
+		<http:listener doc:name="Listener" doc:id="82aab1a4-36f6-4457-b9ae-6f97afa01cf3" config-ref="HTTP_Listener_config" path="/error6"/>
+		<flow-ref doc:name="Flow Reference" doc:id="756d7d88-bde0-475b-8a21-52777e8cb239" name="error-handling10Flow1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0cb3b2d7-d430-4838-97db-788c36dd316b" message="parent Error------ #[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e167a914-97fb-4aee-81c9-d117f0b8c6fe">
+				<ee:transform doc:name="Transform Message" doc:id="6c9b3d6a-67ec-470e-a78e-fd8ad0ecf7ab" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Error-propagate":"parent Flow"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="error-handling10Flow1" doc:id="75999698-2ada-4f22-96ff-edd0643f900c" >
+		<ee:transform doc:name="Transform Message" doc:id="390210d3-8a0d-43ee-8e4d-a31bf31c0f17" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+25/0]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b89a56aa-d08f-4fba-8fef-63357558ae55" message="child Error------ #[payload]"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b301fcb6-4006-4ca0-946a-35e9e5dcb31a" >
+				<ee:transform doc:name="Transform Message" doc:id="1db4b1e7-a0a4-4e75-8579-6b13941a57b2" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Error-continue":"child Flow"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

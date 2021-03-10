@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f0f0d2de-9fd4-4393-b43e-3b9abfb619e9" >
+		<http:listener-connection host="0.0.0.0" port="8085" />
+	</http:listener-config>
+	<configuration doc:name="Configuration" doc:id="51f5d8c8-a718-4dd7-bb7c-8066cc59737b" defaultErrorHandler-ref="globalError_Handler" />
+	<flow name="error-handlingFlow" doc:id="f1a864cb-e89f-4254-99ac-8d6a4efdf552" >
+		<http:listener doc:name="Listener" doc:id="2fa4ab04-2e0f-4054-8b5b-cc44a1dceaa6" config-ref="HTTP_Listener_config" path="/error1"/>
+		<ee:transform doc:name="Transform Message" doc:id="108f3aa5-14a6-42de-80db-e4bfc69ecf7f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+25/0]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e4800401-b2e1-4379-a3a9-9eedbf09ef07" message="Error  -----  #[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6287e3ff-eec2-4883-997b-8a310493e9bc">
+				<ee:transform doc:name="Transform Message" doc:id="523a55cc-7390-472f-b234-205ecc53e82d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"propagate":"cannot divisible by zero"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="error-handlingFlow1" doc:id="a231800f-a9af-4107-98dd-ab45b4c25b9d" >
+		<http:listener doc:name="Listener" doc:id="8cafe2c6-486f-4766-ac16-f347abff3865" config-ref="HTTP_Listener_config" path="/error2"/>
+		<ee:transform doc:name="Transform Message" doc:id="1f52286e-db16-48c6-ad4c-0a735d5ae129" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+25/0]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ffad6e36-f628-4df0-bd9f-28452faa4f27" message="Error -----  #[payload]" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="dec65c89-8eef-4f3d-94e2-1cc730e69306" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="79b3503e-917d-41d2-9623-2dfe5bf585df" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"continue":"cannot divisible by zero"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
